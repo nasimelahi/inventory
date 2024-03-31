@@ -6,60 +6,76 @@ const BACKEND_URL = process.env.BACKEND_URL
 
 // Send email for verification
 const transporter = nodemailer.createTransport({
-    host: "smtp.ethereal.email",
-    port: 465,
-    secure: true, // Use `true` for port 465, `false` for all other ports
+    host: "smtp-mail.outlook.com",
+    port: 587,
+    secure: false, // Use `true` for port 465, `false` for all other ports
     auth: {
-      user: "froseon@gmail.com",
-      pass: "seodev2019",
+      user: "nasim.1990@hotmail.com",
+      pass: "Delln4011",
     },
+    tls: {
+      // do not fail on invalid certs
+      rejectUnauthorized: false
+  },
 });
 
 // Register a new user
 exports.register = async (req, res) => {
   try {
     const { name , email, password, role, workingHours } = req.body;
+   
+     //Check if user already exists
+     let user = await User.findOne({ email });
+     if (user) {
+       return res.status(400).json({ message: 'User already exists' });
+     }
 
-    // Check if user already exists
-    let user = await User.findOne({ email });
-    if (user) {
-      return res.status(400).json({ message: 'User already exists' });
-    }
+     // Hash password
+     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Create new user
-    user = new User({
-        name,
-        email,
-        password: hashedPassword,
-        role,
-        workingHours,
+     // Create new user
+     user = new User({
+         name,
+         email,
+         password: hashedPassword,
+         role,
+         workingHours,
     });
 
-    await user.save();
+     await user.save();
 
     // Send email for approval
-    let approvalEmailRole;
     let approvalEmailSubject;
 
-    if (role === 'manager') {
-      approvalEmailRole = 'administrator';
-      approvalEmailSubject = 'Manager Registration Approval';
-      emailSendTo = 'froseon@gmail.com'
-    } else {
-      approvalEmailRole = 'manager';
-      approvalEmailSubject = 'User Registration Approval';
-      emailSendTo = 'froseon@gmail.com'
+    // if (role === 'supervisor') {
+    //   approvalEmailSubject = 'supervisor Registration Approval';
+    //   emailSendTo = 'froseon@gmail.com'
+    // } else {
+    //   approvalEmailSubject = 'Staff Registration Approval';
+    //   emailSendTo = 'nasimmd6@gmail.com'
+    // }
+    switch (role) {
+      case 'supervisor':
+      case 'staff':
+        approvalEmailSubject = `${role} Registration Approval`;
+        emailSendTo = 'froseon@gmail.com';
+        break;
+      case 'manager':
+        approvalEmailSubject = `${role} Registration Approval`;
+        emailSendTo = 'nasimmd6@gmail.com';
+        break;
+      default:
+        // Handle any other cases or provide a default behavior
+        break;
     }
+    
 
     const mailOptions = {
-      from: 'froseon@gmail.com',
-      to: `${approvalEmailRole}-${emailSendTo}`,
+      from: 'nasim.1990@hotmail.com',
+      to: `${emailSendTo}`,
       subject: approvalEmailSubject,
       html: `
-        <p>A ${name} with email ${email} has registered.</p>
+        <p>${name} with email ${email} has registered.</p>
         <p>Do you want to approve this user?</p>
         <button onclick="window.location.href='${BACKEND_URL}/approve-registration/${user._id}?approve=true'">Approve</button>
         <button onclick="window.location.href='${BACKEND_URL}/approve-registration/${user._id}?approve=false'">Disapprove</button>
@@ -70,10 +86,9 @@ exports.register = async (req, res) => {
       if (error) {
         console.log('Error sending email:', error);
       } else {
-        console.log('Email sent:', info.response);
+        console.log(`Email sent: ${name}`);
       }
     });
-
     res.status(201).json({ message: `Hi ${name},your registration pending for approval` });
   } catch (error) {
     res.status(500).json({ message: error.message });
