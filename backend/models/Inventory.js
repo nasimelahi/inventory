@@ -1,9 +1,50 @@
 const mongoose = require('../utils/db');
 
-const inventorySchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  description: String,
-  quantity: { type: Number, default: 0 }, // Quantity in milliliters (ml)
-});
+const Schema = mongoose.Schema
 
-module.exports = mongoose.model('Inventory', inventorySchema);
+const product = new Schema ({
+    name : {
+        type : String,
+        required : true
+    },
+
+    barcode : {
+        type : String,
+    },
+
+    brand : {
+        type : String
+    },
+
+    supplier : {
+        type : String
+    },
+
+    buyprice : {
+        type : Number
+    },
+
+    category : {
+        type : String
+    },
+
+    discount : {
+        type : Number
+    },
+
+    reorderlavel : {
+        type : Number
+    },
+    sellprice : {
+        type : Number
+    },
+    size : {
+        type : String
+    },
+    unitinstock : {
+        type : Number
+    }
+    
+},{timestamps : true})
+const Product = mongoose.model('product' , product, 'product')
+module.exports = Product

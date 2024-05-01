@@ -9,10 +9,10 @@ const managerAndAbove = ['manager', 'administrator', 'supervisor'];
 const allRoles = ['manager', 'administrator', 'supervisor', 'staff'];
 
 // Get all items
-router.get('/', checkRole(allRoles), inventoryController.getAllItems);
+router.get('/', inventoryController.getAllItems);
 
 // Get item by ID
-router.get('/:id', checkRole(allRoles), inventoryController.getItemById);
+router.get('/:id', inventoryController.getItemById);
 
 // Create item (allowed for manager and above)
 router.post('/', checkRole(managerAndAbove), inventoryController.createItem);
