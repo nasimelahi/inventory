@@ -8,17 +8,13 @@ const stats = [
   export default function DailySaleSummry() {
     return (
       <div className="bg-white overflow-x-scroll no-scrollbar">
-          <div className="">
-            <dl className="flex grid-cols-4 gap-x-8 gap-y-16 text-center lg:grid-cols-3">
-              {stats.map((stat) => (
-                <div key={stat.id} className="mx-auto w-80 flex flex-col gap-y-4">
-                  <dt className="text-base leading-7 text-gray-600">{stat.name}</dt>
-                  <dd className="order-first text-3xl font-semibold tracking-tight text-gray-900 sm:text-5xl">
-                    {stat.value}
-                  </dd>
-                </div>
-              ))}
-            </dl>
+          <div className=" flex jutify-center">
+            {stats.map((stat) => (
+              <div key={stat.id}class="w-32 h-20 bg-gray-100 rounded-xl mx-2 flex flex-col justify-center text-center">
+                <p className="text-base leading-7 text-gray-600">{stat.value}</p>
+                <p className="order-first font-semibold tracking-tight text-gray-900 ">{stat.name}</p>
+              </div>
+            ))}
           </div>
         </div>
     )
