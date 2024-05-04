@@ -12,15 +12,15 @@ const allRoles = ['manager', 'administrator', 'supervisor', 'staff'];
 router.get('/', inventoryController.getAllItems);
 
 // Get item by ID
-router.get('/:id', inventoryController.getItemById);
+// router.get('/:id', inventoryController.getItemById);
 
-// Create item (allowed for manager and above)
-router.post('/', checkRole(managerAndAbove), inventoryController.createItem);
+// // Create item (allowed for manager and above)
+// router.post('/', checkRole(managerAndAbove), inventoryController.createItem);
 
-// Update item (allowed for manager and above)
-router.put('/:id', checkRole(managerAndAbove), inventoryController.updateItem);
+// // Update item (allowed for manager and above)
+// router.put('/:id', checkRole(managerAndAbove), inventoryController.updateItem);
 
-// Delete item (allowed for manager and above)
-router.delete('/:id', checkRole(managerAndAbove), inventoryController.deleteItem);
+// // Delete item (allowed for manager and above)
+// router.delete('/:id', checkRole(managerAndAbove), inventoryController.deleteItem);
 
 module.exports = router;
